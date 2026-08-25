@@ -1,18 +1,31 @@
+"use client";
+
+import { useLanguage } from "@/lib/i18n";
+
 export default function Header() {
+  const { t, toggle } = useLanguage();
+
   return (
-    <header className="w-full py-10 px-6 text-center flex flex-col items-center gap-3">
+    <header className="w-full py-10 px-6 text-center flex flex-col items-center gap-3 relative">
+      <button
+        onClick={toggle}
+        className="absolute top-6 left-6 text-xs px-3 py-1.5 rounded-full border border-border text-muted hover:text-foreground hover:border-primary transition-colors"
+      >
+        {t.switchTo}
+      </button>
+
       <span className="logo-text gradient-text text-3xl sm:text-4xl font-extrabold">
         Ainimation
       </span>
       <span className="text-xs tracking-wide text-muted px-3 py-1 rounded-full border border-border">
-        متن به انیمیشن با هوش مصنوعی
+        {t.header.badge}
       </span>
       <h1 className="text-3xl sm:text-4xl font-bold">
-        متنت رو بنویس، <span className="gradient-text">انیمیشنش</span> رو تحویل بگیر
+        {t.header.titlePrefix}
+        <span className="gradient-text">{t.header.titleHighlight}</span>
+        {t.header.titleSuffix}
       </h1>
-      <p className="text-muted max-w-xl">
-        توصیف صحنه‌ای که تو ذهنته رو بنویس، هوش مصنوعی برات یه ویدیوی انیمیشنی می‌سازه.
-      </p>
+      <p className="text-muted max-w-xl">{t.header.subtitle}</p>
     </header>
   );
 }

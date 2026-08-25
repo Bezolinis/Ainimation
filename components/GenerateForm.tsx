@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/lib/i18n";
 
 type Status = "idle" | "queued" | "processing" | "completed" | "failed";
+type AspectRatio = "16:9" | "9:16" | "1:1";
 
 interface HistoryItem {
   id: string;
@@ -10,22 +12,12 @@ interface HistoryItem {
   videoUrl: string;
 }
 
-const ASPECT_RATIOS = [
-  { value: "16:9", label: "افقی (16:9)" },
-  { value: "9:16", label: "عمودی (9:16)" },
-  { value: "1:1", label: "مربعی (1:1)" },
-] as const;
-
-const SUGGESTIONS = [
-  "یک روباه کارتونی که زیر نور مهتاب در جنگل می‌دود",
-  "شهر آینده‌نگر با ماشین‌های پرنده در غروب آفتاب",
-  "یک فنجان قهوه که بخار از آن به شکل قلب بالا می‌رود",
-];
+const ASPECT_RATIO_VALUES: AspectRatio[] = ["16:9", "9:16", "1:1"];
 
 export default function GenerateForm() {
+  const { t } = useLanguage();
   const [prompt, setPrompt] = useState("");
-  const [aspectRatio, setAspectRatio] =
-    useState<(typeof ASPECT_RATIOS)[number]["value"]>("16:9");
+  const [aspectRatio, setAspectRatio] = useState<AspectRatio>("16:9");
   const [status, setStatus] = useState<Status>("idle");
   const [progress, setProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -47,7 +39,7 @@ export default function GenerateForm() {
 
         if (!res.ok) {
           setStatus("failed");
-          setError(data.error ?? "خطایی رخ داد.");
+          setError(data.error ?? t.form.errorGeneric);
           return;
         }
 
@@ -61,13 +53,13 @@ export default function GenerateForm() {
             ...prev,
           ]);
         } else if (data.status === "failed") {
-          setError(data.error ?? "تولید ویدیو ناموفق بود.");
+          setError(data.error ?? t.form.errorFailed);
         } else {
           pollJob(jobId, currentPrompt);
         }
       } catch {
         setStatus("failed");
-        setError("ارتباط با سرور برقرار نشد.");
+        setError(t.form.errorNetwork);
       }
     }, 1000);
   }
@@ -91,14 +83,14 @@ export default function GenerateForm() {
 
       if (!res.ok) {
         setStatus("failed");
-        setError(data.error ?? "خطایی رخ داد.");
+        setError(data.error ?? t.form.errorGeneric);
         return;
       }
 
       pollJob(data.jobId, prompt);
     } catch {
       setStatus("failed");
-      setError("ارتباط با سرور برقرار نشد.");
+      setError(t.form.errorNetwork);
     }
   }
 
@@ -109,19 +101,19 @@ export default function GenerateForm() {
       <form onSubmit={handleSubmit} className="card p-6 sm:p-8 flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <label htmlFor="prompt" className="text-sm text-muted">
-            متن انیمیشن رو توصیف کن
+            {t.form.label}
           </label>
           <textarea
             id="prompt"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="مثلاً: یک گربه فضانورد که روی ماه قدم می‌زند..."
+            placeholder={t.form.placeholder}
             rows={4}
             maxLength={1000}
             className="w-full resize-none rounded-xl bg-surface-2 border border-border px-4 py-3 text-base outline-none focus:border-primary transition-colors placeholder:text-muted"
           />
           <div className="flex flex-wrap gap-2 pt-1">
-            {SUGGESTIONS.map((s) => (
+            {t.form.suggestions.map((s) => (
               <button
                 type="button"
                 key={s}
@@ -135,20 +127,20 @@ export default function GenerateForm() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-sm text-muted">نسبت تصویر</span>
+          <span className="text-sm text-muted">{t.form.aspectRatioLabel}</span>
           <div className="flex gap-2">
-            {ASPECT_RATIOS.map((ratio) => (
+            {ASPECT_RATIO_VALUES.map((ratio) => (
               <button
                 type="button"
-                key={ratio.value}
-                onClick={() => setAspectRatio(ratio.value)}
+                key={ratio}
+                onClick={() => setAspectRatio(ratio)}
                 className={`px-4 py-2 rounded-xl text-sm border transition-colors ${
-                  aspectRatio === ratio.value
+                  aspectRatio === ratio
                     ? "border-primary bg-primary/10 text-foreground"
                     : "border-border text-muted hover:text-foreground"
                 }`}
               >
-                {ratio.label}
+                {t.form.aspectRatios[ratio]}
               </button>
             ))}
           </div>
@@ -159,7 +151,7 @@ export default function GenerateForm() {
           disabled={!prompt.trim() || isBusy}
           className="mt-2 w-full rounded-xl py-3.5 font-semibold text-white bg-gradient-to-l from-primary to-primary-2 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
         >
-          {isBusy ? "در حال ساخت انیمیشن..." : "ساخت ویدیو"}
+          {isBusy ? t.form.submitBusy : t.form.submitIdle}
         </button>
       </form>
 
@@ -169,7 +161,7 @@ export default function GenerateForm() {
             <>
               <div className="w-14 h-14 rounded-full border-4 border-border border-t-primary animate-spin-slow" />
               <p className="text-muted animate-pulse-glow">
-                {status === "queued" ? "در صف پردازش..." : "در حال تولید انیمیشن..."}
+                {status === "queued" ? t.form.statusQueued : t.form.statusProcessing}
               </p>
               <div className="w-full h-2 rounded-full bg-surface-2 overflow-hidden">
                 <div
@@ -198,7 +190,7 @@ export default function GenerateForm() {
                 download
                 className="text-center rounded-xl py-3 border border-border hover:border-primary transition-colors text-sm"
               >
-                دانلود ویدیو
+                {t.form.download}
               </a>
             </div>
           )}
@@ -207,7 +199,7 @@ export default function GenerateForm() {
 
       {history.length > 0 && (
         <div className="flex flex-col gap-3">
-          <h2 className="text-sm text-muted">ویدیوهای این نشست</h2>
+          <h2 className="text-sm text-muted">{t.form.historyTitle}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {history.map((item) => (
               <div key={item.id} className="card overflow-hidden">
