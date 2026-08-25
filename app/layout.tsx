@@ -25,6 +25,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fa" dir="rtl" className={`${vazirmatn.variable} ${unbounded.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="fixed inset-0 -z-20 h-full w-full object-cover"
+        >
+          <source src="/background.mp4" type="video/mp4" />
+        </video>
+        <div className="fixed inset-0 -z-10 bg-background/70" />
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
