@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLanguage } from "@/lib/i18n";
 
 export default function Header() {
@@ -14,9 +15,19 @@ export default function Header() {
         {t.switchTo}
       </button>
 
-      <span className="logo-text gradient-text text-3xl sm:text-4xl font-extrabold">
-        Ainimation
-      </span>
+      <div className="flex items-center gap-3">
+        <Image
+          src="/logo.png"
+          alt="Ainimation"
+          width={1070}
+          height={745}
+          priority
+          className="h-12 sm:h-16 w-auto"
+        />
+        <span className="logo-text gradient-text text-3xl sm:text-4xl font-extrabold">
+          Ainimation
+        </span>
+      </div>
       <span className="text-xs tracking-wide text-muted px-3 py-1 rounded-full border border-border">
         {t.header.badge}
       </span>
