@@ -47,8 +47,8 @@ export default function PricingSection() {
 
       <div className="card w-full p-6 sm:p-8 flex flex-col gap-6">
         <div className="flex items-end justify-center gap-1">
-          <span className="text-4xl font-bold">۲۹۹</span>
-          <span className="text-muted mb-1">هزار تومان / ماه</span>
+          <span className="text-4xl font-bold">$19.99</span>
+          <span className="text-muted mb-1">/ ماه</span>
         </div>
 
         <ul className="flex flex-col gap-3">
