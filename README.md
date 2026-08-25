@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# متن به انیمیشن (AI Text-to-Video)
 
-## Getting Started
+سایت تولید انیمیشن با هوش مصنوعی: کاربر متن می‌نویسد، سایت درخواست رو به یک سرویس تولید ویدیو می‌فرسته و نتیجه رو نمایش می‌ده.
 
-First, run the development server:
+## اجرای پروژه
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+سپس آدرس [http://localhost:3000](http://localhost:3000) رو باز کن.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+فعلاً پروژه با یک **provider آزمایشی (mock)** کار می‌کنه که یه ویدیوی نمونه رو بعد از چند ثانیه شبیه‌سازی «در حال تولید» برمی‌گردونه؛ یعنی الان بدون هیچ API واقعی هم کل UI و جریان کار قابل تست هست.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## اتصال به API واقعی تولید ویدیو
 
-## Learn More
+وقتی API خودت رو (مثلاً Replicate، Runway، یا هر سرویس دیگه) آماده کردی:
 
-To learn more about Next.js, take a look at the following resources:
+1. فایل `.env.local.example` رو کپی کن به `.env.local`.
+2. اگر از **Replicate** استفاده می‌کنی:
+   ```
+   VIDEO_PROVIDER=replicate
+   REPLICATE_API_TOKEN=توکن_تو
+   REPLICATE_MODEL_VERSION=شناسه_نسخه_مدل_متن‌به‌ویدیو
+   ```
+   پیاده‌سازی آماده در [lib/providers/replicate.ts](lib/providers/replicate.ts) هست.
+3. اگر سرویس دیگه‌ای می‌خوای وصل کنی (Runway، Veo، یا هر API دیگه):
+   - یک فایل جدید مثل `lib/providers/my-provider.ts` بساز که اینترفیس `VideoProvider` از [lib/providers/types.ts](lib/providers/types.ts) رو پیاده‌سازی کنه (دو تابع `startGeneration` و `getJob`).
+   - اون رو در [lib/providers/index.ts](lib/providers/index.ts) به `getProvider()` اضافه کن.
+   - با تنظیم `VIDEO_PROVIDER=my-provider` در `.env.local` فعالش کن.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+با این ساختار، بقیه‌ی سایت (فرم، API route ها، UI) بدون تغییر باقی می‌مونه و فقط کافیه provider جدید رو وصل کنی.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ساختار پروژه
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/page.tsx` — صفحه اصلی
+- `components/GenerateForm.tsx` — فرم ورود متن، وضعیت تولید، و نمایش ویدیوی نهایی
+- `app/api/generate/route.ts` — شروع یک درخواست تولید ویدیو
+- `app/api/jobs/[id]/route.ts` — استعلام وضعیت/پیشرفت یک درخواست
+- `lib/providers/` — لایه انتزاعی برای اتصال به سرویس‌های مختلف تولید ویدیو با AI
