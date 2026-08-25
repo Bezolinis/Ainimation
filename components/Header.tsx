@@ -1,6 +1,9 @@
 export default function Header() {
   return (
     <header className="w-full py-10 px-6 text-center flex flex-col items-center gap-3">
+      <span className="logo-text gradient-text text-3xl sm:text-4xl font-extrabold">
+        Ainimation
+      </span>
       <span className="text-xs tracking-wide text-muted px-3 py-1 rounded-full border border-border">
         متن به انیمیشن با هوش مصنوعی
       </span>

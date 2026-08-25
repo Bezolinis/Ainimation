@@ -40,6 +40,11 @@ body {
   color: transparent;
 }
 
+.logo-text {
+  font-family: var(--font-logo), sans-serif;
+  letter-spacing: 0.02em;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
