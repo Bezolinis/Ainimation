@@ -1,33 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 
 export default function PricingSection() {
   const { t } = useLanguage();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubscribe() {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/stripe/create-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-      if (data?.url) {
-        window.location.href = data.url;
-        return;
-      }
-      setError(data?.error || t.pricing.errorGeneric);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t.pricing.errorNetwork);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <section className="w-full max-w-3xl mx-auto flex flex-col items-center gap-6 pt-4">
@@ -55,15 +32,12 @@ export default function PricingSection() {
           ))}
         </ul>
 
-        <button
-          onClick={handleSubscribe}
-          disabled={loading}
-          className="w-full rounded-xl py-3.5 font-semibold text-white bg-gradient-to-l from-primary to-primary-2 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+        <Link
+          href="/subscribe"
+          className="w-full text-center rounded-xl py-3.5 font-semibold text-white bg-gradient-to-l from-primary to-primary-2 hover:opacity-90 transition-opacity"
         >
-          {loading ? t.pricing.loading : t.pricing.cta}
-        </button>
-
-        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+          {t.pricing.cta}
+        </Link>
 
         <p className="text-xs text-muted text-center">{t.pricing.secure}</p>
       </div>

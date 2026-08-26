@@ -48,16 +48,17 @@ npm run dev
 
 ## افزودن خرید اشتراک (Stripe)
 
-در این پروژه یک مسیر ساده برای خرید اشتراک ماهانه با استفاده از Stripe اضافه شده است:
+پرداخت اشتراک ماهانه به‌صورت **کاملاً داخل سایت** (نه صفحه‌ی هاست‌شده‌ی Stripe) با Stripe Elements پیاده‌سازی شده:
 
-- صفحه‌ی پرداخت: `/subscribe`
-- ایجاد سشن پرداخت: `POST /api/stripe/create-session`
+- صفحه‌ی پرداخت: `/subscribe` (فرم ایمیل + فرم کارت، هر دو داخل همین صفحه)
+- ایجاد Subscription و PaymentIntent: `POST /api/stripe/create-subscription`
 - وبهوک دریافت رویدادها: `POST /api/stripe/webhook`
 
 پیش‌نیازها (متغیرهای محیطی):
 
 ```
-STRIPE_SECRET_KEY=sk_live_... 
+STRIPE_SECRET_KEY=sk_live_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
 STRIPE_PRICE_ID=price_...   # شناسه قیمت ماهانه در داشبورد Stripe
 STRIPE_WEBHOOK_SECRET=whsec_...
 ```
@@ -78,6 +79,6 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 npm run dev
 ```
 
-سپس به `http://localhost:3000/subscribe` برو و دکمه‌ی "مشترک شدن" را بزن. پس از وارد کردن اطلاعات کارت، Stripe کاربر را به `success_url` یا `cancel_url` بازمی‌گرداند.
+سپس به `http://localhost:3000/subscribe` برو، ایمیلت رو بزن و روی «ادامه به پرداخت» کلیک کن؛ فرم کارت همون‌جا (Stripe Payment Element) لود میشه و بعد از تکمیل پرداخت، به همین صفحه با `?success=true` برمی‌گردی.
 
 نکته: شناسه قیمت (`STRIPE_PRICE_ID`) را باید در داشبورد Stripe برای محصول/پلن ماهیانه خود بسازی و مقدار آن را قرار دهی.

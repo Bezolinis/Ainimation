@@ -46,8 +46,13 @@ interface TranslationDict {
     subtitle: string;
     success: string;
     canceled: string;
-    cta: string;
-    loading: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    emailRequired: string;
+    continueCta: string;
+    continueLoading: string;
+    payCta: string;
+    payLoading: string;
     back: string;
   };
 }
@@ -108,11 +113,16 @@ const translations: Record<Language, TranslationDict> = {
     },
     subscribe: {
       title: "خرید اشتراک ماهانه",
-      subtitle: "با کلیک روی دکمه‌ی زیر به صفحه‌ی پرداخت Stripe منتقل می‌شوی.",
+      subtitle: "ایمیلت رو وارد کن و مستقیم همینجا با کارتت پرداخت رو تکمیل کن.",
       success: "پرداخت با موفقیت انجام شد. اشتراک ماهانه‌ات فعال شد. 🎉",
       canceled: "پرداخت لغو شد. هر وقت خواستی می‌تونی دوباره اقدام کنی.",
-      cta: "مشترک شدن - ماهیانه",
-      loading: "در حال هدایت...",
+      emailLabel: "ایمیل",
+      emailPlaceholder: "you@example.com",
+      emailRequired: "لطفاً یک ایمیل معتبر وارد کن.",
+      continueCta: "ادامه به پرداخت",
+      continueLoading: "در حال آماده‌سازی پرداخت...",
+      payCta: "پرداخت و شروع اشتراک",
+      payLoading: "در حال پردازش پرداخت...",
       back: "بازگشت به صفحه اصلی",
     },
   },
@@ -170,11 +180,16 @@ const translations: Record<Language, TranslationDict> = {
     },
     subscribe: {
       title: "Get Monthly Subscription",
-      subtitle: "Click the button below to go to Stripe checkout.",
+      subtitle: "Enter your email and complete payment right here with your card.",
       success: "Payment successful. Your monthly subscription is now active. 🎉",
       canceled: "Payment canceled. You can try again anytime.",
-      cta: "Subscribe - Monthly",
-      loading: "Redirecting...",
+      emailLabel: "Email",
+      emailPlaceholder: "you@example.com",
+      emailRequired: "Please enter a valid email.",
+      continueCta: "Continue to payment",
+      continueLoading: "Preparing payment...",
+      payCta: "Pay and start subscription",
+      payLoading: "Processing payment...",
       back: "Back to home",
     },
   },
